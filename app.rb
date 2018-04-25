@@ -41,7 +41,7 @@ end
 
 def span_indicies(field, span_string)
   exclusive        = span_string[0] == ']' ? span_string.delete!(']') : false
-  starting, ending = span_string.split('..').map { |val| val == '' ? nil : val.to_i }
+  starting, ending = span_string.split('..').map { |val| val == '' ? nil : val.gsub(/\D/,'').to_i }
   starting += 1 if exclusive
 
   if field == 'id'
