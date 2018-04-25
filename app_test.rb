@@ -5,7 +5,7 @@ require 'rack/test'
 require 'json'
 require_relative 'app'
 
-class HelloTest < Test::Unit::TestCase
+class RangeHeaderTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
@@ -114,7 +114,7 @@ class HelloTest < Test::Unit::TestCase
 
   # I wanted to include this to show how my name ranges work.
   # It's silly, but it's technically a range :) (not sorted by id)
-  def test_inclusive_bounded_range_name_5_to_6_max_2
+  def test_inclusive_bounded_range_name_1_to_4_max_4
     header 'Range', 'name my-app-1..my-app-4; max=4'
 
     get '/'
