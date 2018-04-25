@@ -3,8 +3,6 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require_relative 'app_model'
 
-require 'pry'
-
 set :database, { adapter: 'sqlite3', database: 'db/development.sqlite3' }
 
 get '/' do
