@@ -12,7 +12,7 @@ class HelloTest < Test::Unit::TestCase
     Sinatra::Application
   end
 
-  # Let's assert all of the valid Range examples pass from the HackerRack assignment pass!
+  # Let's assert all of the valid Range examples pass from the HackerRack assignment!
 
   # Range: id ..
   def test_unbounded_range
