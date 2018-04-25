@@ -2,6 +2,7 @@ ENV['RACK_ENV'] = 'test'
 
 require 'test/unit'
 require 'rack/test'
+require 'json'
 require_relative 'app'
 
 class HelloTest < Test::Unit::TestCase
@@ -11,9 +12,103 @@ class HelloTest < Test::Unit::TestCase
     Sinatra::Application
   end
 
-  def test_it_says_hello_world
+  # Let's assert all of the valid Range examples pass from the HackerRack assignment pass!
+
+  # Range: id ..
+  def test_unbounded_range
+    header 'Range', 'id ..'
+
     get '/'
+    json_response = JSON.parse(last_response.body)
+
     assert last_response.ok?
-    assert_equal 'hello!', last_response.body
+    assert_equal Array, json_response.class
+    assert_equal 200, json_response.count
+    assert_equal 1, json_response.first['id']
+    assert_equal 200, json_response.last['id']
+  end
+
+  # Range: id 1..
+  def test_inclusive_unbounded_range_starting_at_id_1
+    header 'Range', 'id 1..'
+
+    get '/'
+    json_response = JSON.parse(last_response.body)
+
+    assert last_response.ok?
+    assert_equal Array, json_response.class
+    assert_equal 200, json_response.count
+    assert_equal 1, json_response.first['id']
+    assert_equal 200, json_response.last['id']
+  end
+
+  # Range: id 1..5
+  def test_inclusive_bounded_range_id_1_through_5
+    header 'Range', 'id 1..5'
+
+    get '/'
+    json_response = JSON.parse(last_response.body)
+
+    assert last_response.ok?
+    assert_equal Array, json_response.class
+    assert_equal 5, json_response.count
+    assert_equal 1, json_response.first['id']
+    assert_equal 5, json_response.last['id']
+  end
+
+  # Range: id ]5..
+  def test_exclusive_unbounded_range_id_5
+    header 'Range', 'id ]5..'
+
+    get '/'
+    json_response = JSON.parse(last_response.body)
+
+    assert last_response.ok?
+    assert_equal Array, json_response.class
+    assert_equal 196, json_response.count
+    assert_equal 6, json_response.first['id']
+    assert_equal 201, json_response.last['id']
+  end
+
+  # Range: id 1..; max=5
+  def test_inclusive_unbounded_range_id_1_max_5
+    header 'Range', 'id 1..; max=5'
+
+    get '/'
+    json_response = JSON.parse(last_response.body)
+
+    assert last_response.ok?
+    assert_equal Array, json_response.class
+    assert_equal 5, json_response.count
+    assert_equal 1, json_response.first['id']
+    assert_equal 5, json_response.last['id']
+  end
+
+  # Range: id 1..; order=desc
+  def test_inclusive_unbounded_range_id_1_order_desc
+    header 'Range', 'id 1..; order=desc'
+
+    get '/'
+    json_response = JSON.parse(last_response.body)
+
+    assert last_response.ok?
+    assert_equal Array, json_response.class
+    assert_equal 200, json_response.count
+    assert_equal 201, json_response.first['id']
+    assert_equal 2, json_response.last['id']
+  end
+
+  # Range: id ]5..10; max=5, order=desc
+  def test_exclusive_bounded_range_id_5_to_10_order_desc
+    header 'Range', 'id ]5..10; order=desc'
+
+    get '/'
+    json_response = JSON.parse(last_response.body)
+
+    assert last_response.ok?
+    assert_equal Array, json_response.class
+    assert_equal 5, json_response.count
+    assert_equal 10, json_response.first['id']
+    assert_equal 6, json_response.last['id']
   end
 end
